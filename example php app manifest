@@ -1,0 +1,62 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app-php
+  namespace: production
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: app-php
+  template:
+    metadata:
+      labels:
+        app: app-php
+    spec:
+      containers:
+      - name: app-php
+        envFrom:
+        - secretRef:
+            name: app-name
+        # ...
+        image: 12345.dkr.ecr.eu-west-2.amazonaws.com/app/app-php:latest
+        env:
+        - name: DD_AGENT_HOST
+          valueFrom:
+            fieldRef:
+              fieldPath: status.hostIP
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 9000
+          name: fastcgi
+        livenessProbe:
+          tcpSocket:
+            port: 9000
+          initialDelaySeconds: 30
+          periodSeconds: 5
+          timeoutSeconds: 2
+        resources:
+          limits:
+            cpu: 2048m
+            memory: 2048Mi
+          requests:
+            cpu: 512m
+            memory: 1024Mi
+        lifecycle:
+          postStart:
+            exec:
+              command: ["/bin/bash", "-c", "php artisan optimize && php artisan storage:link\
+                  \ && php artisan migrate --force "]
+---
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: production
+  name: app-php
+spec:
+  selector:
+    app: app-php
+  ports:
+  - port: 9000
+    targetPort: 9000
