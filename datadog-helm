@@ -1,0 +1,49 @@
+---
+apiVersion: helm.fluxcd.io/v1
+kind: HelmRelease
+metadata:
+  name: datadog
+  namespace: kube-system
+spec:
+  releaseName: datadog
+  chart:
+    repository: https://helm.datadoghq.com
+    name: datadog
+    version: 2.4.14
+  registry: public.ecr.aws/datadog
+  values:
+    datadog:
+      site: datadoghq.eu  #Remove if not using the .eu site
+      apiKeyExistingSecret: datadog-apikey-secret
+      clusterName: CHANGEME
+      logLevel: trace
+      kubeStateMetricsEnabled: true
+      clusterChecks:
+        enabled: true
+      dogstatsd:
+        enabled: true
+        port: 8125
+        nonLocalTraffic: true
+        useHostPort: true
+      collectEvents: true
+      logs:
+        enabled: true
+        containerCollectAll: true
+      apm:
+        useSocketVolume: true
+        socketPath: /var/run/datadog/apm.socket
+        hostSocketPath: /var/run/datadog/
+        enabled: true
+        port: 8126
+        nonLocalTraffic: true
+        useHostPort: true
+      processAgent:
+        enabled: true
+        processCollection: true
+      clusterAgent:
+        enabled: true
+        admissionController:
+          enabled: true
+      env:
+      - name: DD_CONTAINER_EXCLUDE
+        value: "name:dd-agent"
