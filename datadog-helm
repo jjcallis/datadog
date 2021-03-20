@@ -27,8 +27,8 @@ spec:
         useHostPort: true
       collectEvents: true
       logs:
-        enabled: true
-        containerCollectAll: true
+        enabled: false
+        containerCollectAll: false
       apm:
         useSocketVolume: true
         socketPath: /var/run/datadog/apm.socket
@@ -44,6 +44,6 @@ spec:
         enabled: true
         admissionController:
           enabled: true
-      env:
-      - name: DD_CONTAINER_EXCLUDE
-        value: "name:dd-agent"
+      #env:
+      #- name: DD_CONTAINER_EXCLUDE
+       # value: "name:dd-agent" #EXAMPLE
