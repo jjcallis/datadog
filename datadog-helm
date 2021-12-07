@@ -9,7 +9,7 @@ spec:
   chart:
     repository: https://helm.datadoghq.com
     name: datadog
-    version: 2.4.14
+    version: 2.27.3
   registry: public.ecr.aws/datadog
   values:
     datadog:
