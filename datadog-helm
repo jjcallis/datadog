@@ -9,7 +9,7 @@ spec:
   chart:
     repository: https://helm.datadoghq.com
     name: datadog
-    version: 2.27.3
+    version: 3.0.3
   registry: public.ecr.aws/datadog
   values:
     datadog:
@@ -46,4 +46,4 @@ spec:
           enabled: true
       #env:
       #- name: DD_CONTAINER_EXCLUDE
-       # value: "name:dd-agent" #EXAMPLE
+       # value: "name:dd-agent name:datadog-agent" #EXAMPLE
